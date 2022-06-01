@@ -1,47 +1,38 @@
 package com.aws.demo.controller;
 
-import com.aws.demo.GsonTester;
-import com.aws.demo.model.Account;
 import com.aws.demo.model.Mission;
-import com.google.gson.reflect.TypeToken;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api")
 @RestController
 public class MissionController {
+    Mission m = new Mission();
+    Gson gson = new Gson();
+    ArrayList<Mission> list = new ArrayList<>();
+    ArrayList<Mission> list_task = new ArrayList<>();
+    ArrayList<Mission> list_unfinished = new ArrayList<>();
+    ArrayList<Mission> list_running = new ArrayList<>();
+    ArrayList<Mission> list_history = new ArrayList<>();
 
-    ArrayList<Mission> list = new ArrayList<Mission>();
-    ArrayList<Mission> list_task = new ArrayList<Mission>();
-    ArrayList<Mission> list_unfinished = new ArrayList<Mission>();
-    ArrayList<Mission> list_running = new ArrayList<Mission>();
-    ArrayList<Mission> list_history = new ArrayList<Mission>();
-
-    public void mission() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        list = new ArrayList<Mission>();
-        list_task = new ArrayList<Mission>();
-        list_unfinished = new ArrayList<Mission>();
-        list_running = new ArrayList<Mission>();
-        list_history = new ArrayList<Mission>();
+    public void mission() throws SQLException, ClassNotFoundException {
+        list = new ArrayList<>();
+        list_task = new ArrayList<>();
+        list_unfinished = new ArrayList<>();
+        list_running = new ArrayList<>();
+        list_history = new ArrayList<>();
         connect_db();
-        Gson gson = new Gson();
-        for(int counter = 0; counter < list.size(); counter++) {
-            if(list.get(counter).getApp_situation().equals("Unfinished")){
-                list_unfinished.add(list.get(counter));
-            }else if (list.get(counter).getApp_situation().equals("Running")){
-                list_running.add(list.get(counter));
-            }else{
-                list_history.add(list.get(counter));
+        for (Mission mission : list) {
+            if (mission.getApp_situation().equals("Unfinished")) {
+                list_unfinished.add(mission);
+            } else if (mission.getApp_situation().equals("Running")) {
+                list_running.add(mission);
+            } else {
+                list_history.add(mission);
             }
         }
         list_task.addAll(list_unfinished);
@@ -49,7 +40,7 @@ public class MissionController {
     }
 
     @RequestMapping("/mission/task")
-    public String task() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public String task() throws SQLException, ClassNotFoundException {
         mission();
         Gson gson = new Gson();
         StringBuilder sb = new StringBuilder();
@@ -59,12 +50,12 @@ public class MissionController {
                 sb.append(",");
             }
         }
-        list_task = new ArrayList<Mission>();
-        return "[" + sb.toString() + "]";
+        list_task = new ArrayList<>();
+        return "[" + sb + "]";
     }
 
     @RequestMapping("/mission/history")
-    public String history() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public String history() throws SQLException, ClassNotFoundException {
         mission();
         Gson gson = new Gson();
         StringBuilder sb = new StringBuilder();
@@ -74,26 +65,35 @@ public class MissionController {
                 sb.append(",");
             }
         }
-        list_history = new ArrayList<Mission>();
-        return "[" + sb.toString() + "]";
+        list_history = new ArrayList<>();
+        return "[" + sb + "]";
     }
 
-    @RequestMapping("/mission/change")
-    public String ChangeStatus(@RequestBody Mission m) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        change_db();
-        Gson gson = new Gson();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(gson.toJson(m));
-        return "[" + sb.toString() + "]";
+    @RequestMapping("/mission/start/{id}")
+    public String StartMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        String json = gson.toJson(this.m.Start(id));
+        return "[" + json + "]";
+    }
+    @RequestMapping("/mission/cancel/{id}")
+    public String CancelMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        String json = gson.toJson(this.m.Cancel(id));
+        return "[" + json + "]";
     }
 
-    public void change_db() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
-        Class.forName("com.mysql.jdbc.Driver").newInstance();
-        String url = "jdbc:mysql://localhost:3316/aws";
+    @RequestMapping("/mission/complete/{id}")
+    public String CompleteMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        String json = gson.toJson(this.m.Complete(id));
+        return "[" + json + "]";
+    }
+
+
+
+    public void connect_db() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        String url = "jdbc:mysql://localhost:3306/aws";
         String db_username = "test";
         String db_password = "12345";
-        Connection connection = null;
+        Connection connection;
         try {
             connection = DriverManager.getConnection(url, db_username, db_password);
         } catch (SQLException e) {
@@ -103,28 +103,7 @@ public class MissionController {
         ResultSet rs = stmt.executeQuery("SELECT * FROM `mission_manage`");//搜尋哪個資料表
 
 
-        while (rs.next() == true){
-
-        }
-        connection.close();
-    }
-
-    public void connect_db() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
-        Class.forName("com.mysql.jdbc.Driver").newInstance();
-        String url = "jdbc:mysql://localhost:3316/aws";
-        String db_username = "test";
-        String db_password = "12345";
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(url, db_username, db_password);
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot connect the database!", e);
-        }
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM `mission_manage`");//搜尋哪個資料表
-
-
-        while (rs.next() == true){
+        while (rs.next()){
             Mission m = new Mission();
             m.setId(rs.getInt("date_mission"));
             m.setCategory(rs.getString("category"));

@@ -1,6 +1,59 @@
 package com.aws.demo.model;
 
+import com.aws.demo.controller.DatabaseController;
+
+import java.sql.*;
+
 public class Mission {
+    Mission m;
+    public Mission Start(Integer id) throws SQLException, ClassNotFoundException {
+        DatabaseController.update_id("mission_manage",id, "Running");
+        ResultSet rs =DatabaseController.view_id("mission_manage",id);
+
+        m = new Mission();
+        while (rs.next()){
+            m.setId(rs.getInt("date_mission"));
+            m.setCategory(rs.getString("category"));
+            m.setLocation(rs.getString("location"));
+            m.setCar_id(rs.getString("car_id"));
+            m.setApp_situation(rs.getString("app_situation"));
+            m.setNote(rs.getString("note"));
+        }
+        return m;
+    }
+
+    public Mission Cancel(Integer id) throws SQLException, ClassNotFoundException {
+        DatabaseController.update_id("mission_manage",id, "Cancel");
+        ResultSet rs =DatabaseController.view_id("mission_manage",id);
+
+        m = new Mission();
+        while (rs.next()){
+            m.setId(rs.getInt("date_mission"));
+            m.setCategory(rs.getString("category"));
+            m.setLocation(rs.getString("location"));
+            m.setCar_id(rs.getString("car_id"));
+            m.setApp_situation(rs.getString("app_situation"));
+            m.setNote(rs.getString("note"));
+        }
+        return m;
+    }
+
+    public Mission Complete(Integer id) throws SQLException, ClassNotFoundException {
+        DatabaseController.update_id("mission_manage",id, "Complete");
+        ResultSet rs =DatabaseController.view_id("mission_manage",id);
+
+        m = new Mission();
+        while (rs.next()){
+            m.setId(rs.getInt("date_mission"));
+            m.setCategory(rs.getString("category"));
+            m.setLocation(rs.getString("location"));
+            m.setCar_id(rs.getString("car_id"));
+            m.setApp_situation(rs.getString("app_situation"));
+            m.setNote(rs.getString("note"));
+        }
+        return m;
+    }
+
     private Integer id;
     private String date = "2022/06/10";
     private String category;
