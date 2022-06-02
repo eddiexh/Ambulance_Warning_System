@@ -31,9 +31,11 @@ public class DatabaseController {
         return rs;
     }
 
-    public static void update_id(String table, Integer id, String status) throws ClassNotFoundException, SQLException {
+    public static void update_id(String table,String title, Integer id, String s) throws ClassNotFoundException, SQLException {
         Statement stmt = connect_db();
-        stmt.execute("update `mission_manage` set app_situation='" + status + "' where date_mission =" + id);
+        stmt.execute("update `" + table + "` set " + title +"='" + s + "' where date_mission =" + id);
+                         //"update `mission_manage` set app_situation='123' where date_mission = 123"
+
     }
 }
 

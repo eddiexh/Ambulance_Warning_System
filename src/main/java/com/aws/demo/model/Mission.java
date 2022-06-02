@@ -1,5 +1,6 @@
 package com.aws.demo.model;
 
+import com.aws.demo.controller.ArduinoController;
 import com.aws.demo.controller.DatabaseController;
 
 import java.sql.*;
@@ -7,7 +8,7 @@ import java.sql.*;
 public class Mission {
     Mission m;
     public Mission Start(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseController.update_id("mission_manage",id, "Running");
+        DatabaseController.update_id("mission_manage","app_situation",id, "Running");
         ResultSet rs =DatabaseController.view_id("mission_manage",id);
 
         m = new Mission();
@@ -19,11 +20,13 @@ public class Mission {
             m.setApp_situation(rs.getString("app_situation"));
             m.setNote(rs.getString("note"));
         }
+        ArduinoController client = new ArduinoController();
+        client.run();
         return m;
     }
 
     public Mission Cancel(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseController.update_id("mission_manage",id, "Cancel");
+        DatabaseController.update_id("mission_manage","app_situation",id, "Cancel");
         ResultSet rs =DatabaseController.view_id("mission_manage",id);
 
         m = new Mission();
@@ -39,7 +42,7 @@ public class Mission {
     }
 
     public Mission Complete(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseController.update_id("mission_manage",id, "Complete");
+        DatabaseController.update_id("mission_manage","app_situation",id, "Complete");
         ResultSet rs =DatabaseController.view_id("mission_manage",id);
 
         m = new Mission();

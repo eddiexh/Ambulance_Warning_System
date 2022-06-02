@@ -31,11 +31,6 @@ public class ArduinoController {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        ArduinoController client = new ArduinoController();
-        int i = 0;
-        while(i<=5) {
-            client.run();
-            i += 1;
-        }
+
     }
 }
