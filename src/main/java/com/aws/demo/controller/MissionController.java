@@ -71,17 +71,20 @@ public class MissionController {
 
     @RequestMapping("/mission/start/{id}")
     public String StartMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        Mission m = new Mission();
         String json = gson.toJson(this.m.Start(id));
         return "[" + json + "]";
     }
     @RequestMapping("/mission/cancel/{id}")
     public String CancelMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        Mission m = new Mission();
         String json = gson.toJson(this.m.Cancel(id));
         return "[" + json + "]";
     }
 
     @RequestMapping("/mission/complete/{id}")
     public String CompleteMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        Mission m = new Mission();
         String json = gson.toJson(this.m.Complete(id));
         return "[" + json + "]";
     }

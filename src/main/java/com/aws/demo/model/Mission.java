@@ -1,15 +1,15 @@
 package com.aws.demo.model;
 
 import com.aws.demo.controller.ArduinoController;
-import com.aws.demo.controller.DatabaseController;
+import com.aws.demo.controller.DatabaseManager;
 
 import java.sql.*;
 
 public class Mission {
     Mission m;
     public Mission Start(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseController.update_id("mission_manage","app_situation",id, "Running");
-        ResultSet rs =DatabaseController.view_id("mission_manage",id);
+        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Running");
+        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
 
         m = new Mission();
         while (rs.next()){
@@ -26,8 +26,8 @@ public class Mission {
     }
 
     public Mission Cancel(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseController.update_id("mission_manage","app_situation",id, "Cancel");
-        ResultSet rs =DatabaseController.view_id("mission_manage",id);
+        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Cancel");
+        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
 
         m = new Mission();
         while (rs.next()){
@@ -42,8 +42,8 @@ public class Mission {
     }
 
     public Mission Complete(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseController.update_id("mission_manage","app_situation",id, "Complete");
-        ResultSet rs =DatabaseController.view_id("mission_manage",id);
+        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Complete");
+        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
 
         m = new Mission();
         while (rs.next()){

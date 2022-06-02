@@ -11,14 +11,14 @@ import com.aws.demo.model.*;
 
 @RequestMapping("/api")
 @RestController
-public class LoginController {
+public class AccountController {
 
     ArrayList<String> account = new ArrayList<String>();
     ArrayList<String> password = new ArrayList<String>();
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody Account acc) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        ResultSet rs = DatabaseController.view_table("user_information");
+        ResultSet rs = DatabaseManager.view_table("user_information");
         while (rs.next() == true){
             account.add(rs.getString("account"));
             password.add(rs.getString("password"));
