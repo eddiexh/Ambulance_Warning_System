@@ -1,5 +1,6 @@
 package com.aws.demo.controller;
 
+import com.aws.demo.model.DBTitle;
 import com.aws.demo.model.Mission;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,24 +9,85 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api")
+@RequestMapping("/api/mission")
 @RestController
 public class MissionController {
-    Mission m = new Mission();
     Gson gson = new Gson();
-    ArrayList<Mission> list = new ArrayList<>();
-    ArrayList<Mission> list_task = new ArrayList<>();
-    ArrayList<Mission> list_unfinished = new ArrayList<>();
-    ArrayList<Mission> list_running = new ArrayList<>();
-    ArrayList<Mission> list_history = new ArrayList<>();
+    ArrayList<Mission> list;
+    ArrayList<Mission> list_task;
+    ArrayList<Mission> list_unfinished;
+    ArrayList<Mission> list_running;
+    ArrayList<Mission> list_history;
 
-    public void mission() throws SQLException, ClassNotFoundException {
+    @RequestMapping("/start/{id}")
+    public String StartMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        Mission m = new Mission();
+        String json = gson.toJson(m.Start(id));
+        return "[" + json + "]";
+    }
+    @RequestMapping("/cancel/{id}")
+    public String CancelMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        Mission m = new Mission();
+        String json = gson.toJson(m.Cancel(id));
+        return "[" + json + "]";
+    }
+
+    @RequestMapping("/complete/{id}")
+    public String CompleteMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
+        Mission m = new Mission();
+        String json = gson.toJson(m.Complete(id));
+        return "[" + json + "]";
+    }
+
+    @RequestMapping("/task")
+    public String task() throws SQLException, ClassNotFoundException {
+        GetMissionInfo();
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < list_task.size(); i++) {
+            sb.append(gson.toJson(list_task.get(i)));
+            if (i !=  list_task.size() - 1){
+                sb.append(",");
+            }
+        }
+        list_task = new ArrayList<>();
+        return "[" + sb + "]";
+    }
+
+    @RequestMapping("/history")
+    public String history() throws SQLException, ClassNotFoundException {
+        GetMissionInfo();
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < list_history.size(); i++) {
+            sb.append(gson.toJson(list_history.get(i)));
+            if (i !=  list_history.size() - 1){
+                sb.append(",");
+            }
+        }
+        list_history = new ArrayList<>();
+        return "[" + sb + "]";
+    }
+
+    public void GetMissionInfo() throws SQLException, ClassNotFoundException {
+        DBTitle t = new DBTitle();
         list = new ArrayList<>();
         list_task = new ArrayList<>();
         list_unfinished = new ArrayList<>();
         list_running = new ArrayList<>();
         list_history = new ArrayList<>();
-        connect_db();
+
+        ResultSet rs = DatabaseManager.view_table("mission_manage");
+
+        while (rs.next()){
+            Mission m = new Mission();
+            m.setId(rs.getInt(t.m1));
+            m.setCategory(rs.getString((t.m2)));
+            m.setLocation(rs.getString((t.m3)));
+            m.setCar_id(rs.getString((t.m4)));
+            m.setApp_situation(rs.getString((t.m5)));
+            m.setNote(rs.getString((t.m6)));
+            list.add(m);
+        }
+
         for (Mission mission : list) {
             if (mission.getApp_situation().equals("Unfinished")) {
                 list_unfinished.add(mission);
@@ -37,85 +99,5 @@ public class MissionController {
         }
         list_task.addAll(list_unfinished);
         list_task.addAll(list_running);
-    }
-
-    @RequestMapping("/mission/task")
-    public String task() throws SQLException, ClassNotFoundException {
-        mission();
-        Gson gson = new Gson();
-        StringBuilder sb = new StringBuilder();
-        for(int counter = 0; counter < list_task.size(); counter++) {
-            sb.append(gson.toJson(list_task.get(counter)));
-            if (counter !=  list_task.size() - 1){
-                sb.append(",");
-            }
-        }
-        list_task = new ArrayList<>();
-        return "[" + sb + "]";
-    }
-
-    @RequestMapping("/mission/history")
-    public String history() throws SQLException, ClassNotFoundException {
-        mission();
-        Gson gson = new Gson();
-        StringBuilder sb = new StringBuilder();
-        for(int counter = 0; counter < list_history.size(); counter++) {
-            sb.append(gson.toJson(list_history.get(counter)));
-            if (counter !=  list_history.size() - 1){
-                sb.append(",");
-            }
-        }
-        list_history = new ArrayList<>();
-        return "[" + sb + "]";
-    }
-
-    @RequestMapping("/mission/start/{id}")
-    public String StartMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
-        Mission m = new Mission();
-        String json = gson.toJson(this.m.Start(id));
-        return "[" + json + "]";
-    }
-    @RequestMapping("/mission/cancel/{id}")
-    public String CancelMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
-        Mission m = new Mission();
-        String json = gson.toJson(this.m.Cancel(id));
-        return "[" + json + "]";
-    }
-
-    @RequestMapping("/mission/complete/{id}")
-    public String CompleteMission(@PathVariable("id") Integer id) throws SQLException, ClassNotFoundException {
-        Mission m = new Mission();
-        String json = gson.toJson(this.m.Complete(id));
-        return "[" + json + "]";
-    }
-
-
-
-    public void connect_db() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        String url = "jdbc:mysql://localhost:3306/aws";
-        String db_username = "test";
-        String db_password = "12345";
-        Connection connection;
-        try {
-            connection = DriverManager.getConnection(url, db_username, db_password);
-        } catch (SQLException e) {
-            throw new RuntimeException("Cannot connect the database!", e);
-        }
-        Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM `mission_manage`");//搜尋哪個資料表
-
-
-        while (rs.next()){
-            Mission m = new Mission();
-            m.setId(rs.getInt("date_mission"));
-            m.setCategory(rs.getString("category"));
-            m.setLocation(rs.getString("location"));
-            m.setCar_id(rs.getString("car_id"));
-            m.setApp_situation(rs.getString("app_situation"));
-            m.setNote(rs.getString("note"));
-            list.add(m);
-        }
-        connection.close();
     }
 }

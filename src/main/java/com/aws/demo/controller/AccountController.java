@@ -1,5 +1,4 @@
 package com.aws.demo.controller;
-import java.util.ArrayList;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,29 +8,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.*;
 import com.aws.demo.model.*;
 
-@RequestMapping("/api")
+@RequestMapping("/api/account")
 @RestController
+
 public class AccountController {
-
-    ArrayList<String> account = new ArrayList<String>();
-    ArrayList<String> password = new ArrayList<String>();
-
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Account acc) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        ResultSet rs = DatabaseManager.view_table("user_information");
-        while (rs.next() == true){
-            account.add(rs.getString("account"));
-            password.add(rs.getString("password"));
+    public ResponseEntity login(@RequestBody Account acc) throws SQLException, ClassNotFoundException{
+        if (Account.login(acc)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        ResponseEntity status;
+    }
 
-        for (int counter = 0; counter < account.size(); counter++) {
-            if (acc.getAccount().equals(account.get(counter)) && acc.getPassword().equals(password.get(counter))){
-                status =  new ResponseEntity<>(HttpStatus.OK);
-                return status;
-            }
-        }
-        status =  new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return status;
+    @PostMapping("/change_password")
+    public void Change_Password(@RequestBody Account acc) throws SQLException, ClassNotFoundException{
+        Account.change_password(acc);
     }
 }

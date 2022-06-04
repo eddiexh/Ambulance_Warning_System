@@ -1,64 +1,13 @@
 package com.aws.demo.model;
 
-import com.aws.demo.controller.ArduinoController;
 import com.aws.demo.controller.DatabaseManager;
 
 import java.sql.*;
 
 public class Mission {
-    Mission m;
-    public Mission Start(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Running");
-        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
-
-        m = new Mission();
-        while (rs.next()){
-            m.setId(rs.getInt("date_mission"));
-            m.setCategory(rs.getString("category"));
-            m.setLocation(rs.getString("location"));
-            m.setCar_id(rs.getString("car_id"));
-            m.setApp_situation(rs.getString("app_situation"));
-            m.setNote(rs.getString("note"));
-        }
-        ArduinoController client = new ArduinoController();
-        client.run();
-        return m;
-    }
-
-    public Mission Cancel(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Cancel");
-        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
-
-        m = new Mission();
-        while (rs.next()){
-            m.setId(rs.getInt("date_mission"));
-            m.setCategory(rs.getString("category"));
-            m.setLocation(rs.getString("location"));
-            m.setCar_id(rs.getString("car_id"));
-            m.setApp_situation(rs.getString("app_situation"));
-            m.setNote(rs.getString("note"));
-        }
-        return m;
-    }
-
-    public Mission Complete(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Complete");
-        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
-
-        m = new Mission();
-        while (rs.next()){
-            m.setId(rs.getInt("date_mission"));
-            m.setCategory(rs.getString("category"));
-            m.setLocation(rs.getString("location"));
-            m.setCar_id(rs.getString("car_id"));
-            m.setApp_situation(rs.getString("app_situation"));
-            m.setNote(rs.getString("note"));
-        }
-        return m;
-    }
-
+    DBTitle t = new DBTitle();
     private Integer id;
-    private String date = "2022/06/10";
+    private final String date = "2022/06/10";
     private String category;
     private String location;
     private String car_id;
@@ -109,5 +58,39 @@ public class Mission {
     }
     public String getNote() {
         return note;
+    }
+
+    public Mission Start(Integer id) throws SQLException, ClassNotFoundException {
+        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Running");
+        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
+
+        //TrafficLight tl = new TrafficLight();
+        //tl.run();
+        return Return(rs,t);
+    }
+
+    public Mission Cancel(Integer id) throws SQLException, ClassNotFoundException {
+        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Cancel");
+        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
+        return Return(rs,t);
+    }
+
+    public Mission Complete(Integer id) throws SQLException, ClassNotFoundException {
+        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Complete");
+        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
+        return Return(rs,t);
+    }
+
+    public Mission Return(ResultSet rs, DBTitle t) throws SQLException {
+        Mission m = new Mission();
+        while (rs.next()){
+            m.setId(rs.getInt(t.m1));
+            m.setCategory(rs.getString((t.m2)));
+            m.setLocation(rs.getString((t.m3)));
+            m.setCar_id(rs.getString((t.m4)));
+            m.setApp_situation(rs.getString((t.m5)));
+            m.setNote(rs.getString((t.m6)));
+        }
+        return m;
     }
 }
