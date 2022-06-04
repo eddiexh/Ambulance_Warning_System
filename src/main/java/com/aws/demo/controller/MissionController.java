@@ -40,7 +40,7 @@ public class MissionController {
     }
 
     @RequestMapping("/task")
-    public String task() throws SQLException, ClassNotFoundException {
+    public String Task() throws SQLException, ClassNotFoundException {
         GetMissionInfo();
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < list_task.size(); i++) {
@@ -54,7 +54,7 @@ public class MissionController {
     }
 
     @RequestMapping("/history")
-    public String history() throws SQLException, ClassNotFoundException {
+    public String History() throws SQLException, ClassNotFoundException {
         GetMissionInfo();
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < list_history.size(); i++) {
@@ -75,7 +75,7 @@ public class MissionController {
         list_running = new ArrayList<>();
         list_history = new ArrayList<>();
 
-        ResultSet rs = DatabaseManager.view_table("mission_manage");
+        ResultSet rs = DatabaseManager.View_table("mission_manage");
 
         while (rs.next()){
             Mission m = new Mission();

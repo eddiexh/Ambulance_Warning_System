@@ -31,14 +31,14 @@ public class Account {
     public static void GetAccountInfo(DBTitle t) throws SQLException, ClassNotFoundException {
         account_db = new ArrayList<>();
         password_db = new ArrayList<>();
-        ResultSet rs = DatabaseManager.view_table("user_information");
+        ResultSet rs = DatabaseManager.View_table("user_information");
         while (rs.next() == true) {
             account_db.add(rs.getString(t.a1));
             password_db.add(rs.getString(t.a2));
         }
     }
 
-    public static Boolean login(Account acc) throws SQLException, ClassNotFoundException {
+    public static Boolean Login(Account acc) throws SQLException, ClassNotFoundException {
         GetAccountInfo(t);
         for (int i = 0; i < account_db.size(); i++) {
             if (acc.getAccount().equals(account_db.get(i)) && acc.getPassword().equals(password_db.get(i))) {
@@ -47,7 +47,7 @@ public class Account {
         }
         return false;
     }
-    public static void change_password(Account acc) {
+    public static void Change_Password(Account acc) {
         String np = "input";
         acc.password = np;
     }

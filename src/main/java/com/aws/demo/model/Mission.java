@@ -61,25 +61,21 @@ public class Mission {
     }
 
     public Mission Start(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Running");
-        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
+        ResultSet rs = DatabaseManager.Update_id("mission_manage","app_situation","date_mission",id, "Running");
 
         TrafficLight tl = new TrafficLight();
-        //tl = tl.getTrafficLightInfo(new DBTitle());
-        //tl.run();
         //tl.ChangeLight(Return(rs,t), tl, true);
+        //tl.run();
         return Return(rs,t);
     }
 
     public Mission Cancel(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Cancel");
-        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
+        ResultSet rs = DatabaseManager.Update_id("mission_manage","app_situation","date_mission",id, "Cancel");
         return Return(rs,t);
     }
 
     public Mission Complete(Integer id) throws SQLException, ClassNotFoundException {
-        DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Complete");
-        ResultSet rs = DatabaseManager.view_id("mission_manage",id);
+        ResultSet rs = DatabaseManager.Update_id("mission_manage","app_situation","date_mission",id, "Complete");
         return Return(rs,t);
     }
 

@@ -12,51 +12,22 @@ import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-//extend green light
-//change rad light
-
-//recover light
-
 public class TrafficLight {
-    private Integer id;
-    private double x;
-    private double y;
-    private String Status;
-
-    public Integer getId() {
-        return id;
+    public void Buffer(Mission m, TrafficLight tl) {
+        tl.setBuffertime(10);
+        if (tl.getDistance() == 0 && m.getApp_situation() != "cancel") {
+            for (int i = tl.getBuffertime(); i > 0; i--) {
+                tl.setStatus("yellow");
+            }
+        }else{
+            for (int i = tl.getBuffertime(); i > 0; i--) {
+                tl.setStatus("red");
+            }
+        }
+        //RecoverLight(tl);
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public String getStatus() {
-        return Status;
-    }
-
-    public void setStatus(String status) {
-        Status = status;
-    }
-
-
-    public void run() {
+    public void Run() {
             try {
                 int serverPort = 8888;
                 InetAddress host = InetAddress.getByName("172.20.10.7");
@@ -91,11 +62,90 @@ public class TrafficLight {
         return distance;
     }
 
-    private int buffertime;
-    private double X;
-    private double Y;
+    public void ChangeLight(Mission m, TrafficLight tl, boolean on_main_lane) throws SQLException, ClassNotFoundException {
+        tl.GetTrafficLightInfo();
+        String MStatus = m.getApp_situation();
+        while (MStatus.equals("running") && tl.getDistance()!=0) {
+            if (tl.getDistance() <= 1000 && on_main_lane) {
+                tl.setStatus("green");
+                AddSpecialSign();
+            } else {
+                tl.setStatus("red");
+            }
+        }
+        //buffer(m, tl);
+    }
 
+    public void AddSpecialSign(){
+        System.out.println("+");
+    }
+
+    public void RecoverLight(TrafficLight tl){
+        switch (tl.getPre_status()) {
+            case "green":
+                tl.setStatus("green");
+                break;
+            case "yellow":
+                tl.setStatus("yellow");
+                break;
+            case "red":
+                tl.setStatus("red");
+                break;
+        }
+    }
+    public TrafficLight GetTrafficLightInfo() throws SQLException, ClassNotFoundException {
+        ResultSet rs =  DatabaseManager.View_id("traffic_light","id",1);
+        TrafficLight tl = new TrafficLight();
+        DBTitle t = new DBTitle();
+        while (rs.next()){
+            tl.setId(rs.getInt(t.getT1()));
+            tl.setX(rs.getInt(t.getT2()));
+            tl.setY(rs.getInt(t.getT3()));
+            tl.setStatus(rs.getString(t.getT4()));
+        }
+        return tl;
+    }
+
+    DBTitle t = new DBTitle();
+    private Integer id;
+    private double x;
+    private double y;
+    private String Status;
+    private int buffertime;
     private String pre_status;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
+
 
     public String getPre_status() {
         return pre_status;
@@ -112,64 +162,5 @@ public class TrafficLight {
 
     public void setBuffertime(int buffertime) {
         this.buffertime = buffertime;
-    }
-
-
-    public TrafficLight getTrafficLightInfo(DBTitle t) throws SQLException, ClassNotFoundException {
-        ResultSet rs =  DatabaseManager.view_id("traffic_light",1);
-        TrafficLight tl = new TrafficLight();
-        while (rs.next()){
-            tl.setId(rs.getInt(t.t1));
-            tl.setX(rs.getInt(t.t2));
-            tl.setY(rs.getInt(t.t3));
-            tl.setStatus(rs.getString(t.t4));
-        }
-        return tl;
-    }
-
-    public void ChangeLight(Mission m, TrafficLight tl, boolean on_main_lane) {
-        while (m.getApp_situation() == "start") {
-            if (tl.getDistance() <= 1000 && on_main_lane) {
-                tl.setStatus("green");
-                this.addSpecialSign();
-                //wait ambulance
-                buffer(m, tl);
-            } else {
-                tl.setStatus("red");
-                //wait ambulance
-                buffer(m, tl);
-            }
-        }
-    }
-
-    public void buffer(Mission m,TrafficLight tl) {
-        tl.setBuffertime(10);
-        if (tl.getDistance() == 0 && m.getApp_situation() != "cancel") {
-            for (int i = tl.getBuffertime(); i > 0; i--) {
-                tl.setStatus("yellow");
-            }
-        }else{
-            for (int i = tl.getBuffertime(); i > 0; i--) {
-                tl.setStatus("red");
-            }
-        }
-        RecoverLight(m,tl);
-    }
-    public void addSpecialSign(){
-        System.out.println("+");
-    }
-
-    public void RecoverLight(Mission m ,TrafficLight tl){
-        switch (tl.getPre_status()) {
-            case "green":
-                tl.setStatus("green");
-                break;
-            case "yellow":
-                tl.setStatus("yellow");
-                break;
-            case "red":
-                tl.setStatus("red");
-                break;
-        }
     }
 }

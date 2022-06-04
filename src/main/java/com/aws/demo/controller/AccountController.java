@@ -13,16 +13,18 @@ import com.aws.demo.model.*;
 
 public class AccountController {
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Account acc) throws SQLException, ClassNotFoundException{
-        if (Account.login(acc)) {
-            return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity Login(@RequestBody Account acc) throws SQLException, ClassNotFoundException{
+        ResponseEntity verify;
+        if (Account.Login(acc)) {
+            verify = new ResponseEntity<>(HttpStatus.OK);
         }else{
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            verify = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        return verify;
     }
 
     @PostMapping("/change_password")
     public void Change_Password(@RequestBody Account acc) throws SQLException, ClassNotFoundException{
-        Account.change_password(acc);
+        Account.Change_Password(acc);
     }
 }

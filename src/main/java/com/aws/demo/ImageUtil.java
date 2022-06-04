@@ -16,6 +16,6 @@ public class ImageUtil {
         //System.out.println(base64);
         byte[] base64Arr = base64.getBytes();
         byte[] decodeData = Base64.decodeBase64(base64Arr);
-        DatabaseManager.update_id("user_information","picture","id",1,Base64.encodeBase64String(decodeData));
+        DatabaseManager.Update_id("user_information","picture","id",1,Base64.encodeBase64String(decodeData));
     }
 }
