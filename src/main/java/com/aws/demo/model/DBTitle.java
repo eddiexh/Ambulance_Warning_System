@@ -11,5 +11,10 @@ public class DBTitle {
     public String m5 = "app_situation";
     public String m6 = "date_mission";
     public String m7 = "note";
+
+    public String t1 = "id";
+    public String t2 = "x";
+    public String t3 = "y";
+    public String t4 = "status";
 }
 

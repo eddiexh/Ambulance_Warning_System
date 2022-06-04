@@ -28,16 +28,6 @@ public class Account {
     static ArrayList<String> password_db;
     static DBTitle t = new DBTitle();
 
-    public static Boolean login(Account acc) throws SQLException, ClassNotFoundException {
-        GetAccountInfo(t);
-        for (int i = 0; i < account_db.size(); i++) {
-            if (acc.getAccount().equals(account_db.get(i)) && acc.getPassword().equals(password_db.get(i))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static void GetAccountInfo(DBTitle t) throws SQLException, ClassNotFoundException {
         account_db = new ArrayList<>();
         password_db = new ArrayList<>();
@@ -48,8 +38,18 @@ public class Account {
         }
     }
 
+    public static Boolean login(Account acc) throws SQLException, ClassNotFoundException {
+        GetAccountInfo(t);
+        for (int i = 0; i < account_db.size(); i++) {
+            if (acc.getAccount().equals(account_db.get(i)) && acc.getPassword().equals(password_db.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
     public static void change_password(Account acc) {
-        //fake
+        String np = "input";
+        acc.password = np;
     }
 
 }

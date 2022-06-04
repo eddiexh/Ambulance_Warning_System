@@ -91,13 +91,10 @@ public class MissionController {
         for (Mission mission : list) {
             if (mission.getApp_situation().equals("Unfinished")) {
                 list_unfinished.add(mission);
-            } else if (mission.getApp_situation().equals("Running")) {
-                list_running.add(mission);
-            } else {
+            } else if(mission.getApp_situation().equals("Complete") || mission.getApp_situation().equals("Cancel")) {
                 list_history.add(mission);
             }
         }
         list_task.addAll(list_unfinished);
-        list_task.addAll(list_running);
     }
 }

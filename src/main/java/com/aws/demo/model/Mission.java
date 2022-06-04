@@ -64,8 +64,10 @@ public class Mission {
         DatabaseManager.update_id("mission_manage","app_situation","date_mission",id, "Running");
         ResultSet rs = DatabaseManager.view_id("mission_manage",id);
 
-        //TrafficLight tl = new TrafficLight();
+        TrafficLight tl = new TrafficLight();
+        //tl = tl.getTrafficLightInfo(new DBTitle());
         //tl.run();
+        //tl.ChangeLight(Return(rs,t), tl, true);
         return Return(rs,t);
     }
 
