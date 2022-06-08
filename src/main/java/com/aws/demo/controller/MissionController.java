@@ -91,7 +91,7 @@ public class MissionController {
         for (Mission mission : list) {
             if (mission.getApp_situation().equals("Unfinished")) {
                 list_unfinished.add(mission);
-            } else if(mission.getApp_situation().equals("Complete") || mission.getApp_situation().equals("Cancel")) {
+            } else if(mission.getApp_situation().equals("Completed") || mission.getApp_situation().equals("Cancel")) {
                 list_history.add(mission);
             }
         }

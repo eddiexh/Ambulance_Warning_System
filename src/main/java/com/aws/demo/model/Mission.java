@@ -65,7 +65,7 @@ public class Mission {
 
         TrafficLight tl = new TrafficLight();
         //tl.ChangeLight(Return(rs,t), tl, true);
-        //tl.run();
+        tl.Run();
         return Return(rs,t);
     }
 

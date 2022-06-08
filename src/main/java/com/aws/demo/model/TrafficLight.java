@@ -30,7 +30,7 @@ public class TrafficLight {
     public void Run() {
             try {
                 int serverPort = 8888;
-                InetAddress host = InetAddress.getByName("172.20.10.7");
+                InetAddress host = InetAddress.getByName("192.168.68.118");
                 System.out.println("Connecting to server on port " + serverPort);
 
                 Socket socket = new Socket(host,serverPort);
